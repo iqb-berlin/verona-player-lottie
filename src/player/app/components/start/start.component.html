@@ -1,0 +1,24 @@
+<div class="scene-wrapper" [style.background-color]="unitService.unitData.backgroundColor">
+  <div class="foreground-wrapper">
+    <img [src]="foregroundData()" />
+  </div>
+  <div class="main-wrapper">
+    <lottie-scene
+      [animationSrc]="animationService.currentMain()"
+      [animationId]="'first'"
+      (loopFinished)="loopFinished($event)">
+    </lottie-scene>
+  </div>
+  <div class="sec-wrapper">
+    <lottie-scene
+      [animationSrc]="animationService.currentSecond()"
+      [animationId]="'second'">
+    </lottie-scene>
+  </div>
+  <div class="background-wrapper">
+    <lottie-scene
+      [animationSrc]="backgroundData()"
+      [animationId]="'background'">
+    </lottie-scene>
+  </div>
+</div>

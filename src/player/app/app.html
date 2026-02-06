@@ -1,0 +1,8 @@
+<!-- menu for standalone mode -->
+@if (isStandalone) {
+  <stars-standalone-menu></stars-standalone-menu>
+}
+
+@if (unitService.isUnitLoaded()) {
+  <start-scene></start-scene>
+}
