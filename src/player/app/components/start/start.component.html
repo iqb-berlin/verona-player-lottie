@@ -4,21 +4,19 @@
   </div>
   <div class="main-wrapper">
     <lottie-scene
-      [animationSrc]="animationService.currentMain()"
-      [animationId]="'first'"
-      (loopFinished)="loopFinished($event)">
+      [animationData]="animationService.currentMain()"
+      (loopFinished)="animationService.loopFinished($event)"
+      (completed)="animationService.completed($event)">
     </lottie-scene>
   </div>
   <div class="sec-wrapper">
     <lottie-scene
-      [animationSrc]="animationService.currentSecond()"
-      [animationId]="'second'">
+      [animationData]="animationService.currentSecond()">
     </lottie-scene>
   </div>
   <div class="background-wrapper">
     <lottie-scene
-      [animationSrc]="backgroundData()"
-      [animationId]="'background'">
+      [animationData]="backgroundData()">
     </lottie-scene>
   </div>
 </div>

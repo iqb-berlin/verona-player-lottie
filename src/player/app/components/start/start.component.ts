@@ -15,17 +15,20 @@ export class StartComponent implements OnInit {
   unitService = inject(UnitService);
   animationService = inject(AnimationService);
 
-  backgroundData= signal('');
-  foregroundData = signal('');
+  backgroundData= signal<AnimationData>({} as AnimationData);
+  foregroundData = signal<string>('');
 
   ngOnInit() {
     if (this.unitService.getCockpitSrc()) this.foregroundData.set(this.unitService.getCockpitSrc());
-    if (this.unitService.getBackgroundSrc()) this.backgroundData.set(this.unitService.getBackgroundSrc());
+    if (this.unitService.getBackgroundSrc()) {
+      this.backgroundData.set({
+        animationSrc: this.unitService.getBackgroundSrc(),
+        id: 'background',
+        loop: true,
+        loopCount: 0
+      });
+    }
     this.animationService.setAnimationData();
     this.animationService.startAnimation();
-  }
-
-  loopFinished(animationId: string) {
-    console.log('Loop finished', animationId);
   }
 }

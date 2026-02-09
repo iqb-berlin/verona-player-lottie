@@ -16,9 +16,9 @@ export class AnimationService {
   private _currentScene = signal<SceneData | undefined>(undefined);
   currentScene = this._currentScene.asReadonly();
 
-  private _currentMain = signal<string>('');
+  private _currentMain = signal<AnimationData>({} as AnimationData);
   currentMain = this._currentMain.asReadonly();
-  private _currentSecond = signal<string>('');
+  private _currentSecond = signal<AnimationData>({} as AnimationData);
   currentSecond = this._currentSecond.asReadonly();
 
   private sceneList: SceneData[] = [];
@@ -37,13 +37,24 @@ export class AnimationService {
       this._currentAnimations.set(this.currentScene()?.animationIds || []);
       if (this.currentAnimations().length > 0) {
         const animationSrc = this.unitService.getAnimationSrc(this.currentAnimations()[0]);
-        this._currentMain.set(animationSrc);
+        this._currentMain.set({
+          animationSrc: animationSrc,
+          id: 'main',
+          loop: this._currentScene()?.loop || false,
+          loopCount: this._currentScene()?.loopCount || 0
+        });
         if (this.currentAnimations().length > 1) {
           const animationSrc = this.unitService.getAnimationSrc(this.currentAnimations()[1]);
-          this._currentSecond.set(animationSrc);
+          this._currentSecond.set({
+            animationSrc: animationSrc,
+            id: 'second',
+            loop: this._currentScene()?.loop || false,
+            loopCount: this._currentScene()?.loopCount || 0
+          });
         }
       }
       if (this.currentScene()?.audioSrc) {
+        this.audioFinished = false;
         this.audioService.setAudioSrc(this.currentScene()?.audioSrc || '')
           .then(() => {
             this.audioService.getPlayFinished()
@@ -56,8 +67,12 @@ export class AnimationService {
     }
   }
 
-  hasEnded(animationId: string) {
+  loopFinished(animationId: string) {
+    if( this.audioFinished ) this.nextScene();
+  }
 
+  completed(animationId: string) {
+    if( this.audioFinished ) this.nextScene();
   }
 
   nextScene() {

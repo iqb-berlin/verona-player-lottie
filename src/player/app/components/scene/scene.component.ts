@@ -2,6 +2,7 @@ import {
   AfterViewInit, Component, effect, ElementRef, input, output, signal, ViewChild
 } from '@angular/core';
 import { DotLottie } from '@lottiefiles/dotlottie-web';
+import { AnimationData } from '../../models/unit.model';
 
 @Component({
   selector: 'lottie-scene',
@@ -10,11 +11,8 @@ import { DotLottie } from '@lottiefiles/dotlottie-web';
 })
 
 export class SceneComponent implements AfterViewInit {
-  animationSrc = input.required<string>();
-  animationId = input.required<string>();
+  animationData = input.required<AnimationData>();
   autoplay = input<boolean>(true);
-  loop = input<boolean>(true);
-  loopCount = input<number>(0);
   loopFinished = output<string>();
   completed = output<string>();
 
@@ -24,14 +22,17 @@ export class SceneComponent implements AfterViewInit {
 
   constructor() {
     effect(() => {
-      if (this.sceneContainer && this.animationSrc()) {
-        console.log('Creating DotLottie scene', this.animationId(), 'with src', this.animationSrc() );
+      if (this.sceneContainer && this.animationData().animationSrc) {
+        if (this._dotLottieScene) {
+          this._dotLottieScene.destroy();
+          this.removeListeners();
+        }
         this._dotLottieScene = new DotLottie({
           canvas: this.sceneContainer.nativeElement,
           autoplay: this.autoplay(),
-          loop: this.loop(),
-          loopCount: this.loopCount(),
-          src: this.animationSrc(),
+          loop: this.animationData().loop || true,
+          loopCount: this.animationData().loopCount || 0,
+          src: this.animationData().animationSrc,
           renderConfig: {
             autoResize: true,
             devicePixelRatio: 1,
@@ -40,21 +41,33 @@ export class SceneComponent implements AfterViewInit {
             fit: 'contain',
             align: [0.5, 0.5]
           }
-        })
+        });
+        this.addListeners();
       }
       if (this.autoplay()) this.animationHidden.set(false);
     });
   }
 
-  ngAfterViewInit(): void {
+  ngAfterViewInit() {
+    this.addListeners();
+  }
+
+  addListeners(): void {
     if (this._dotLottieScene) {
       this._dotLottieScene.addEventListener('loop', ({ loopCount }) => {
-        this.loopFinished.emit(this.animationId());
+        this.loopFinished.emit(this.animationData().id);
       });
       this._dotLottieScene.addEventListener('complete', () => {
         console.log('Animation completed');
-        this.completed.emit(this.animationId());
+        this.completed.emit(this.animationData().id);
       });
+    }
+  }
+
+  removeListeners(): void {
+    if (this._dotLottieScene) {
+      this._dotLottieScene.removeEventListener('loop', ({ loopCount }) => {});
+      this._dotLottieScene.removeEventListener('complete', () => {});
     }
   }
 

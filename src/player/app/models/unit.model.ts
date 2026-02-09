@@ -10,6 +10,8 @@ export interface SceneData {
 export interface AnimationData {
   id: string;
   animationSrc: string;
+  loop?: boolean;
+  loopCount?: number;
 }
 
 export interface UnitData {
