@@ -13,6 +13,7 @@ export class UnitService {
     backgroundColor: '#000000',
     cockpitSrc: '',
     backgroundSrc: '',
+    foregroundSrc: '',
     infiniteLoops: [],
     script: [],
     animations: []
@@ -22,6 +23,7 @@ export class UnitService {
     this.unitData.backgroundColor = '#000000';
     this.unitData.cockpitSrc = '';
     this.unitData.backgroundSrc = '';
+    this.unitData.foregroundSrc ='';
     this.unitData.infiniteLoops = [];
     this.unitData.script = [];
     this.unitData.animations = [];
@@ -35,6 +37,7 @@ export class UnitService {
     if (unitData.backgroundColor) this.unitData.backgroundColor = unitData.backgroundColor;
     if (unitData.cockpitSrc) this.unitData.cockpitSrc = unitData.cockpitSrc;
     if (unitData.backgroundSrc) this.unitData.backgroundSrc = unitData.backgroundSrc;
+    if (unitData.foregroundSrc) this.unitData.foregroundSrc = unitData.foregroundSrc;
     if (unitData.infiniteLoops) this.unitData.infiniteLoops = unitData.infiniteLoops;
     if (unitData.script) this.unitData.script = unitData.script;
     if (unitData.animations) this.unitData.animations = unitData.animations;
@@ -48,6 +51,10 @@ export class UnitService {
 
   getBackgroundSrc() {
     return this.unitData.backgroundSrc || '';
+  }
+
+  getForegroundSrc() {
+    return this.unitData.foregroundSrc || '';
   }
 
   getAnimationSrc(animationId: string): string {

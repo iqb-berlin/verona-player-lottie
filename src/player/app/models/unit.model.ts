@@ -18,6 +18,7 @@ export interface UnitData {
   backgroundColor: string;
   cockpitSrc: string;
   backgroundSrc: string;
+  foregroundSrc: string;
   infiniteLoops: string[];
   script: SceneData[],
   animations: AnimationData[]

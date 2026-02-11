@@ -1,6 +1,11 @@
 <div class="scene-wrapper" [style.background-color]="unitService.unitData.backgroundColor">
+  <div class="cockpit-wrapper">
+    <img [src]="cockpitData()" />
+  </div>
   <div class="foreground-wrapper">
-    <img [src]="foregroundData()" />
+    <lottie-scene
+      [animationData]="foregroundData()">
+    </lottie-scene>
   </div>
   <div class="main-wrapper">
     <lottie-scene
