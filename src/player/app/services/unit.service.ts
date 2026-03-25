@@ -1,5 +1,7 @@
 import { Injectable, signal } from '@angular/core';
-import { UnitData } from '../models/unit.model';
+
+import { SceneData, UnitData } from '../models/unit.model';
+import { PlayerConfig } from '../../../verona/verona.interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -8,25 +10,21 @@ import { UnitData } from '../models/unit.model';
 export class UnitService {
   serviceName = 'UnitService';
   isUnitLoaded = signal<boolean>(false);
+  sceneData = signal<SceneData>({} as SceneData)
 
   unitData: UnitData = {
     backgroundColor: '#000000',
-    cockpitSrc: '',
-    backgroundSrc: '',
-    foregroundSrc: '',
-    infiniteLoops: [],
-    script: [],
+    scenes: [],
     animations: []
   };
 
+  playerConfig: PlayerConfig = {};
+
   resetData() {
     this.unitData.backgroundColor = '#000000';
-    this.unitData.cockpitSrc = '';
-    this.unitData.backgroundSrc = '';
-    this.unitData.foregroundSrc ='';
-    this.unitData.infiniteLoops = [];
-    this.unitData.script = [];
+    this.unitData.scenes = [];
     this.unitData.animations = [];
+    this.playerConfig = {};
   }
 
   setNewData(data: any) {
@@ -35,31 +33,34 @@ export class UnitService {
     const unitData = data as UnitData;
 
     if (unitData.backgroundColor) this.unitData.backgroundColor = unitData.backgroundColor;
-    if (unitData.cockpitSrc) this.unitData.cockpitSrc = unitData.cockpitSrc;
-    if (unitData.backgroundSrc) this.unitData.backgroundSrc = unitData.backgroundSrc;
-    if (unitData.foregroundSrc) this.unitData.foregroundSrc = unitData.foregroundSrc;
-    if (unitData.infiniteLoops) this.unitData.infiniteLoops = unitData.infiniteLoops;
-    if (unitData.script) this.unitData.script = unitData.script;
+    if (unitData.scenes) this.unitData.scenes = unitData.scenes;
     if (unitData.animations) this.unitData.animations = unitData.animations;
+
+    if (this.unitData.scenes.length > 0) {
+      this.sceneData.set(this.unitData.scenes[0]);
+    }
 
     this.isUnitLoaded.set(true);
   }
 
-  getCockpitSrc() {
-    return this.unitData.cockpitSrc || '';
+  setPlayerConfig(playerConfig: PlayerConfig) {
+    console.log(this.serviceName, 'setPlayerConfig', playerConfig);
+
+    // only need the playerConfig for sharedParameters
+    if (playerConfig.sharedParameters && playerConfig.sharedParameters.length)
+      this.playerConfig = playerConfig;
   }
 
-  getBackgroundSrc() {
-    return this.unitData.backgroundSrc || '';
-  }
-
-  getForegroundSrc() {
-    return this.unitData.foregroundSrc || '';
+  nextScene() {
+    console.log("nextScene");
+    if (this.unitData.scenes.length > 0) {
+      this.unitData.scenes.shift();
+      this.sceneData.set(this.unitData.scenes[0]);
+    }
   }
 
   getAnimationSrc(animationId: string): string {
     const animationSrc = this.unitData.animations.find((a) => a.id === animationId);
-    console.log(this.serviceName, 'getAnimationSrc', animationId, animationSrc);
     return animationSrc?.animationSrc || '';
   }
 }

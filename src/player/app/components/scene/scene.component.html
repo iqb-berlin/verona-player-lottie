@@ -1,1 +1,29 @@
-<canvas #sceneCanvas [class]="animationData().id" [class.hidden]="animationHidden()"></canvas>
+<div class="scene-wrapper" [style.background-color]="unitService.unitData.backgroundColor">
+  @if (cockpitData()) {
+    <div class="cockpit-wrapper">
+      <img [src]="cockpitData()" />
+    </div>
+  }
+  <div class="foreground-wrapper">
+    <lottie-scene
+      [animationData]="foregroundData()">
+    </lottie-scene>
+  </div>
+  <div class="main-wrapper">
+    <lottie-scene
+      [animationData]="animationService.currentMain()"
+      (loopFinished)="animationService.loopFinished($event)"
+      (completed)="animationService.completed($event)">
+    </lottie-scene>
+  </div>
+  <div class="sec-wrapper">
+    <lottie-scene
+      [animationData]="animationService.currentSecond()">
+    </lottie-scene>
+  </div>
+  <div class="background-wrapper">
+    <lottie-scene
+      [animationData]="backgroundData()">
+    </lottie-scene>
+  </div>
+</div>

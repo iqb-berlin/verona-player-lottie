@@ -1,86 +1,66 @@
-import {
-  AfterViewInit, Component, effect, ElementRef, input, output, signal, ViewChild
-} from '@angular/core';
-import { DotLottie } from '@lottiefiles/dotlottie-web';
-import { AnimationData } from '../../models/unit.model';
+import { Component, effect, inject, input, OnInit, output, signal } from '@angular/core';
+
+import { UnitService } from '../../services/unit.service';
+import { ScriptAnimationComponent } from '../script-animation/script-animation.component';
+import { AnimationData, SceneData } from '../../models/unit.model';
+import { AnimationService } from '../../services/animation.service';
 
 @Component({
-  selector: 'lottie-scene',
+  selector: 'scene',
   templateUrl: './scene.component.html',
+  imports: [ScriptAnimationComponent],
   styleUrls: ['./scene.component.scss']
 })
 
-export class SceneComponent implements AfterViewInit {
-  animationData = input.required<AnimationData>();
-  autoplay = input<boolean>(true);
-  loopFinished = output<string>();
-  completed = output<string>();
+export class SceneComponent {
+  unitService = inject(UnitService);
+  animationService = inject(AnimationService);
 
-  @ViewChild('sceneCanvas', { static: true }) sceneContainer!: ElementRef<HTMLCanvasElement>;
-  private _dotLottieScene: DotLottie| null = null;
-  animationHidden = signal(true);
+  sceneData = input.required<SceneData>();
+
+  backgroundData= signal<AnimationData>({} as AnimationData);
+  foregroundData= signal<AnimationData>({} as AnimationData);
+  cockpitData = signal<string>('');
+
+  resetData() {
+    this.backgroundData.set({} as AnimationData);
+    this.foregroundData.set({} as AnimationData);
+    this.cockpitData.set('');
+  }
 
   constructor() {
+    // new sceneData
     effect(() => {
-      if (this.sceneContainer && this.animationData().animationSrc) {
-        if (this._dotLottieScene) {
-          this._dotLottieScene.destroy();
-          this.removeListeners();
+      if (this.sceneData()) {
+        this.resetData();
+
+        console.log("sceneData", this.sceneData());
+
+        const backgroundIds = this.sceneData().backgroundIds || [];
+        if (backgroundIds.length > 0 && backgroundIds[0] !== '') {
+          this.backgroundData.set({
+            animationSrc: backgroundIds[0],
+            id: 'background',
+            loop: true,
+            loopCount: 0
+          });
         }
-        this._dotLottieScene = new DotLottie({
-          canvas: this.sceneContainer.nativeElement,
-          autoplay: this.autoplay(),
-          loop: this.animationData().loop || true,
-          loopCount: this.animationData().loopCount || 0,
-          src: this.animationData().animationSrc,
-          renderConfig: {
-            autoResize: true,
-            devicePixelRatio: 1,
-          },
-          layout: {
-            fit: 'contain',
-            align: [0.5, 0.5]
-          }
-        });
-        this.addListeners();
+
+        const foregroundIds = this.sceneData().foregroundIds || [];
+        if (foregroundIds.length > 0 && foregroundIds[0] !== '') {
+          this.foregroundData.set({
+            animationSrc: foregroundIds[0],
+            id: 'foreground',
+            loop: true,
+            loopCount: 0
+          });
+        }
+
+        this.cockpitData.set(this.sceneData().cockpitSrc || '');
+
+        this.animationService.setAnimationData(this.sceneData().script);
+        this.animationService.startAnimation();
       }
-      if (this.autoplay()) this.animationHidden.set(false);
     });
-  }
-
-  ngAfterViewInit() {
-    this.addListeners();
-  }
-
-  addListeners(): void {
-    if (this._dotLottieScene) {
-      this._dotLottieScene.addEventListener('loop', ({ loopCount }) => {
-        this.loopFinished.emit(this.animationData().id);
-      });
-      this._dotLottieScene.addEventListener('complete', () => {
-        console.log('Animation completed');
-        this.completed.emit(this.animationData().id);
-      });
-    }
-  }
-
-  removeListeners(): void {
-    if (this._dotLottieScene) {
-      this._dotLottieScene.removeEventListener('loop', ({ loopCount }) => {});
-      this._dotLottieScene.removeEventListener('complete', () => {});
-    }
-  }
-
-  play() {
-    this.animationHidden.set(false);
-    this._dotLottieScene?.play();
-  }
-
-  stop() {
-    this._dotLottieScene?.stop();
-  }
-
-  hide() {
-    this.animationHidden.set(true);
   }
 }

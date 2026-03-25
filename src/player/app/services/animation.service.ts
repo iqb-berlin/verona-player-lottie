@@ -1,6 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
+
 import { UnitService } from './unit.service';
-import { AnimationData, SceneData } from '../models/unit.model';
+import { AnimationData, ScriptData } from '../models/unit.model';
 import { AudioService } from './audio.service';
 
 @Injectable({
@@ -13,7 +14,7 @@ export class AnimationService {
 
   private _currentAnimations = signal<string[]>([]);
   currentAnimations = this._currentAnimations.asReadonly();
-  private _currentScene = signal<SceneData | undefined>(undefined);
+  private _currentScene = signal<ScriptData | undefined>(undefined);
   currentScene = this._currentScene.asReadonly();
 
   private _currentMain = signal<AnimationData>({} as AnimationData);
@@ -21,14 +22,13 @@ export class AnimationService {
   private _currentSecond = signal<AnimationData>({} as AnimationData);
   currentSecond = this._currentSecond.asReadonly();
 
-  private sceneList: SceneData[] = [];
+  private sceneList: ScriptData[] = [];
   private hasAudio = false;
   private audioFinished = false;
 
-
-
-  setAnimationData() {
-    this.sceneList = this.unitService.unitData.script;
+  setAnimationData(data: ScriptData[]) {
+    console.log('setAnimationData', data);
+    if (data && data.length) this.sceneList = data;
   }
 
   startAnimation() {
@@ -40,16 +40,16 @@ export class AnimationService {
         this._currentMain.set({
           animationSrc: animationSrc,
           id: 'main',
-          loop: this._currentScene()?.loop || false,
-          loopCount: this._currentScene()?.loopCount || 0
+          loop: this.currentScene()?.loop || false,
+          loopCount: this.currentScene()?.loopCount || 0
         });
         if (this.currentAnimations().length > 1) {
           const animationSrc = this.unitService.getAnimationSrc(this.currentAnimations()[1]);
           this._currentSecond.set({
             animationSrc: animationSrc,
             id: 'second',
-            loop: this._currentScene()?.loop || false,
-            loopCount: this._currentScene()?.loopCount || 0
+            loop: this.currentScene()?.loop || false,
+            loopCount: this.currentScene()?.loopCount || 0
           });
         }
       }
@@ -57,10 +57,12 @@ export class AnimationService {
         this.audioFinished = false;
         this.audioService.setAudioSrc(this.currentScene()?.audioSrc || '')
           .then(() => {
+            console.log("Audio Src loaded");
             this.audioService.getPlayFinished()
               .then(() => {
+                console.log("Audio Src finished");
                 this.audioFinished = true;
-                this.nextScene();
+                this.nextAnimation();
               });
           });
       }
@@ -68,17 +70,21 @@ export class AnimationService {
   }
 
   loopFinished(animationId: string) {
-    if( this.audioFinished ) this.nextScene();
+    if( this.audioFinished ) this.nextAnimation();
   }
 
   completed(animationId: string) {
-    if( this.audioFinished ) this.nextScene();
+    console.log("completed");
+    if( this.audioFinished ) this.nextAnimation();
   }
 
-  nextScene() {
+  nextAnimation() {
+    console.log("nextAnimation");
     if (this.sceneList.length > 0) {
       this.sceneList.shift();
       this.startAnimation();
+    } else {
+      this.unitService.nextScene();
     }
   }
 

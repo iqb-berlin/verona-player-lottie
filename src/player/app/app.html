@@ -4,5 +4,5 @@
 }
 
 @if (unitService.isUnitLoaded()) {
-  <start-scene></start-scene>
+  <scene [sceneData]="unitService.sceneData()"></scene>
 }
