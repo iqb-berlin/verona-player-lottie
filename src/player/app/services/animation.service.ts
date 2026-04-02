@@ -14,7 +14,7 @@ export class AnimationService {
 
   private _currentAnimations = signal<string[]>([]);
   currentAnimations = this._currentAnimations.asReadonly();
-  private _currentScene = signal<ScriptData | undefined>(undefined);
+  private _currentScene = signal<ScriptData>({} as ScriptData);
   currentScene = this._currentScene.asReadonly();
 
   private _currentMain = signal<AnimationData>({} as AnimationData);
@@ -33,16 +33,23 @@ export class AnimationService {
 
   startAnimation() {
     if (this.sceneList.length > 0) {
+      console.log('startAnimation', this.sceneList[0]);
+      this.audioFinished = false;
       this._currentScene.set(this.sceneList[0]);
       this._currentAnimations.set(this.currentScene()?.animationIds || []);
+      // TODO make iteration out of it
       if (this.currentAnimations().length > 0) {
         const animationSrc = this.unitService.getAnimationSrc(this.currentAnimations()[0]);
-        this._currentMain.set({
-          animationSrc: animationSrc,
-          id: 'main',
-          loop: this.currentScene()?.loop || false,
-          loopCount: this.currentScene()?.loopCount || 0
-        });
+        if (animationSrc) {
+          this._currentMain.set({
+            animationSrc: animationSrc,
+            id: 'main',
+            loop: this.currentScene()?.loop || false,
+            loopCount: this.currentScene()?.loopCount || 0
+          });
+        } else {
+          this._currentScene.set({} as ScriptData);
+        }
         if (this.currentAnimations().length > 1) {
           const animationSrc = this.unitService.getAnimationSrc(this.currentAnimations()[1]);
           this._currentSecond.set({
@@ -54,7 +61,6 @@ export class AnimationService {
         }
       }
       if (this.currentScene()?.audioSrc) {
-        this.audioFinished = false;
         this.audioService.setAudioSrc(this.currentScene()?.audioSrc || '')
           .then(() => {
             console.log("Audio Src loaded");
@@ -62,7 +68,9 @@ export class AnimationService {
               .then(() => {
                 console.log("Audio Src finished");
                 this.audioFinished = true;
-                this.nextAnimation();
+                if (this.currentScene()?.waitForAudioToFinish === true) {
+                  this.nextAnimation();
+                }
               });
           });
       }
@@ -70,23 +78,22 @@ export class AnimationService {
   }
 
   loopFinished(animationId: string) {
-    if( this.audioFinished ) this.nextAnimation();
+    console.log("loop");
+    if (this.currentScene()?.waitForAudioToFinish === true && this.audioFinished) this.nextAnimation();
   }
 
   completed(animationId: string) {
     console.log("completed");
-    if( this.audioFinished ) this.nextAnimation();
+    if (this.currentScene()?.waitForAudioToFinish === false) this.nextAnimation();
   }
 
   nextAnimation() {
     console.log("nextAnimation");
+    this.sceneList.shift();
     if (this.sceneList.length > 0) {
-      this.sceneList.shift();
       this.startAnimation();
     } else {
       this.unitService.nextScene();
     }
   }
-
-
 }

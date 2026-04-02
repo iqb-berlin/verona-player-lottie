@@ -3,10 +3,9 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { VeronaPostService } from '../../verona/player/verona-post.service';
 import { VeronaSubscriptionService } from '../../verona/player/verona-subscription.service';
 
-import { StandaloneMenuComponent, SceneComponent, ScriptAnimationComponent } from './components';
+import { StandaloneMenuComponent, SceneComponent } from './components';
 import { UnitService } from './services/unit.service';
 import {
-  PlayerConfig,
   VeronaMetaData,
   VopPlayerConfigChangedNotification,
   VopStartCommand

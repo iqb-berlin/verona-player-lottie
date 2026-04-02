@@ -4,7 +4,7 @@ export interface ScriptData {
   loopCount?: number,
   animationIds: string[],
   audioSrc?: string,
-  waitForLoopToFinish?: boolean
+  waitForAudioToFinish?: boolean
 }
 
 export interface AnimationData {

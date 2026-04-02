@@ -11,7 +11,7 @@ import { AnimationData } from '../../models/unit.model';
 })
 
 export class ScriptAnimationComponent implements AfterViewInit {
-  animationData = input.required<AnimationData>();
+  animationData = input<AnimationData >({} as AnimationData);
   autoplay = input<boolean>(true);
   loopFinished = output<string>();
   completed = output<string>();
@@ -22,8 +22,8 @@ export class ScriptAnimationComponent implements AfterViewInit {
 
   constructor() {
     effect(() => {
-      console.log("AnimationData", this.animationData());
-      if (this.sceneContainer && this.animationData().animationSrc) {
+      if (this.sceneContainer && this.animationData()?.animationSrc) {
+        console.log("AnimationData", this.animationData());
         if (this._dotLottieScene) {
           this._dotLottieScene.destroy();
           this.removeListeners();
@@ -31,9 +31,9 @@ export class ScriptAnimationComponent implements AfterViewInit {
         this._dotLottieScene = new DotLottie({
           canvas: this.sceneContainer.nativeElement,
           autoplay: this.autoplay(),
-          loop: this.animationData().loop || false,
-          loopCount: this.animationData().loopCount || 0,
-          src: this.animationData().animationSrc,
+          loop: this.animationData()?.loop || false,
+          loopCount: this.animationData()?.loopCount || 0,
+          src: this.animationData()?.animationSrc,
           renderConfig: {
             autoResize: true,
             devicePixelRatio: 1,
@@ -53,13 +53,15 @@ export class ScriptAnimationComponent implements AfterViewInit {
   }
 
   addListeners(): void {
-    if (this._dotLottieScene) {
+    if (this._dotLottieScene && this.animationData() !== undefined) {
       this._dotLottieScene.addEventListener('loop', ({ loopCount }) => {
         console.log('Animation looped');
+        // @ts-ignore
         this.loopFinished.emit(this.animationData().id);
       });
       this._dotLottieScene.addEventListener('complete', () => {
         console.log('Animation completed');
+        // @ts-ignore
         this.completed.emit(this.animationData().id);
       });
     }

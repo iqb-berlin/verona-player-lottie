@@ -1,4 +1,6 @@
-import { Component, input } from '@angular/core';
+import { Component, effect, input, output, signal } from '@angular/core';
+
+import { InteractionData, InteractionOptions } from '../../models/unit.model';
 
 @Component({
   selector: 'options-parameters',
@@ -7,9 +9,19 @@ import { Component, input } from '@angular/core';
 })
 
 export class OptionsComponent {
-  avatars = input.required<string[]>();
+  data = input.required<InteractionData>();
+  valueClicked = output<string>();
 
-  continueClicked() {
+  options = signal<InteractionOptions[]>([]);
 
+  constructor() {
+    effect(() => {
+      console.log('option', this.data());
+      this.options.set(this.data().options || []);
+    });
+  }
+
+  onClick(value: string) {
+    this.valueClicked.emit(value);
   }
 }

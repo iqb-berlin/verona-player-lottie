@@ -1,29 +1,38 @@
 <div class="scene-wrapper" [style.background-color]="unitService.unitData.backgroundColor">
+  <options-parameters [data]="interactionData()"></options-parameters>
   @if (cockpitData()) {
     <div class="cockpit-wrapper">
       <img [src]="cockpitData()" />
     </div>
   }
-  <div class="foreground-wrapper">
-    <lottie-scene
-      [animationData]="foregroundData()">
-    </lottie-scene>
-  </div>
-  <div class="main-wrapper">
-    <lottie-scene
-      [animationData]="animationService.currentMain()"
-      (loopFinished)="animationService.loopFinished($event)"
-      (completed)="animationService.completed($event)">
-    </lottie-scene>
-  </div>
-  <div class="sec-wrapper">
-    <lottie-scene
-      [animationData]="animationService.currentSecond()">
-    </lottie-scene>
-  </div>
-  <div class="background-wrapper">
-    <lottie-scene
-      [animationData]="backgroundData()">
-    </lottie-scene>
-  </div>
+  @if (foregroundData().id) {
+    <div class="foreground-wrapper">
+      <lottie-scene
+        [animationData]="foregroundData()">
+      </lottie-scene>
+    </div>
+  }
+  @if (animationService.currentMain().id) {
+    <div class="main-wrapper">
+      <lottie-scene
+        [animationData]="animationService.currentMain()"
+        (loopFinished)="animationService.loopFinished($event)"
+        (completed)="animationService.completed($event)">
+      </lottie-scene>
+    </div>
+  }
+  @if (animationService.currentSecond().id) {
+    <div class="sec-wrapper">
+      <lottie-scene
+        [animationData]="animationService.currentSecond()">
+      </lottie-scene>
+    </div>
+  }
+  @if (backgroundData().id) {
+    <div class="background-wrapper">
+      <lottie-scene
+        [animationData]="backgroundData()">
+      </lottie-scene>
+    </div>
+  }
 </div>
