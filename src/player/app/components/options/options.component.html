@@ -1,14 +1,16 @@
 <div class="options-container">
   @for (opt of options(); track opt.value) {
-    <input
-      [type]="'radio'"
-      [name]="data().sharedId"
-      [id]="data().sharedId + '_' + opt.value"
-      [value]="opt.value"
-      (click)="onClick(opt.value)"
-    />
-    <label [for]="data().sharedId + '_' + opt.value">
-      <span>{{ opt.value }}</span>
-    </label>
+    <div class="option">
+      <input
+        [type]="'radio'"
+        [name]="data().sharedId"
+        [id]="data().sharedId + '_' + opt.value"
+        [value]="opt.value"
+        (click)="onClick(opt.value)"
+      />
+      <label [for]="data().sharedId + '_' + opt.value">
+        <span>{{ opt.value }}</span>
+      </label>
+    </div>
   }
 </div>

@@ -1,3 +1,5 @@
+import { SharedParameter } from '../../../verona/verona.interfaces';
+
 export interface ScriptData {
   scene: string,
   loop: boolean,
@@ -9,12 +11,20 @@ export interface ScriptData {
 
 export interface AnimationData {
   id: string,
-  animationSrc: string,
+  animationSrc?: string,
+  animations?: SharedAnimationData[],
   loop?: boolean,
-  loopCount?: number
+  loopCount?: number,
+  parameterId?: string
+}
+
+export interface SharedAnimationData {
+  id: string,
+  animationSrc: string;
 }
 
 export interface SceneData {
+  scene: string;
   cockpitSrc: string,
   backgroundIds?: string[],
   foregroundIds?: string[],

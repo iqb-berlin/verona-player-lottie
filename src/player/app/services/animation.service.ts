@@ -23,19 +23,22 @@ export class AnimationService {
   currentSecond = this._currentSecond.asReadonly();
 
   private sceneList: ScriptData[] = [];
+  private currentScriptIndex = 0;
+  private isBusy = false;
   private hasAudio = false;
   private audioFinished = false;
 
   setAnimationData(data: ScriptData[]) {
     console.log('setAnimationData', data);
     if (data && data.length) this.sceneList = data;
+    this.currentScriptIndex = 0;
   }
 
   startAnimation() {
-    if (this.sceneList.length > 0) {
-      console.log('startAnimation', this.sceneList[0]);
+    if (this.currentScriptIndex < this.sceneList.length) {
+      console.log('startAnimation', this.sceneList[this.currentScriptIndex]);
       this.audioFinished = false;
-      this._currentScene.set(this.sceneList[0]);
+      this._currentScene.set(this.sceneList[this.currentScriptIndex]);
       this._currentAnimations.set(this.currentScene()?.animationIds || []);
       // TODO make iteration out of it
       if (this.currentAnimations().length > 0) {
@@ -58,9 +61,14 @@ export class AnimationService {
             loop: this.currentScene()?.loop || false,
             loopCount: this.currentScene()?.loopCount || 0
           });
+        } else {
+          this._currentSecond.set({} as AnimationData);
         }
+      } else {
+        this._currentMain.set({} as AnimationData);
       }
       if (this.currentScene()?.audioSrc) {
+        this.audioFinished = false;
         this.audioService.setAudioSrc(this.currentScene()?.audioSrc || '')
           .then(() => {
             console.log("Audio Src loaded");
@@ -89,11 +97,14 @@ export class AnimationService {
 
   nextAnimation() {
     console.log("nextAnimation");
-    this.sceneList.shift();
-    if (this.sceneList.length > 0) {
+    if (this.isBusy) return;
+    this.isBusy = true;
+    this.currentScriptIndex++;
+    if (this.currentScriptIndex < this.sceneList.length) {
       this.startAnimation();
     } else {
       this.unitService.nextScene();
     }
+    setTimeout(() => this.isBusy = false, 100);
   }
 }

@@ -33,7 +33,7 @@ export class ScriptAnimationComponent implements AfterViewInit {
           autoplay: this.autoplay(),
           loop: this.animationData()?.loop || false,
           loopCount: this.animationData()?.loopCount || 0,
-          src: this.animationData()?.animationSrc,
+          src: this.animationData()?.animationSrc as string,
           renderConfig: {
             autoResize: true,
             devicePixelRatio: 1,
@@ -44,6 +44,9 @@ export class ScriptAnimationComponent implements AfterViewInit {
           }
         });
         this.addListeners();
+      } else {
+        console.log('no animation');
+        this._dotLottieScene?.destroy();
       }
     });
   }

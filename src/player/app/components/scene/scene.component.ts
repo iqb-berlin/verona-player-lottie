@@ -24,6 +24,8 @@ export class SceneComponent {
   cockpitData = signal<string>('');
   interactionData = signal<InteractionData>({} as InteractionData );
 
+  oldSceneData = {} as SceneData
+
   resetData() {
     this.backgroundData.set({} as AnimationData);
     this.foregroundData.set({} as AnimationData);
@@ -34,8 +36,10 @@ export class SceneComponent {
   constructor() {
     // new sceneData
     effect(() => {
-      if (this.sceneData()) {
+      if (this.sceneData() && this.sceneData() !== this.oldSceneData) {
         this.resetData();
+
+        this.oldSceneData = this.sceneData();
 
         console.log("sceneData", this.sceneData());
 
@@ -69,8 +73,8 @@ export class SceneComponent {
           }
         }
 
-        if (this.sceneData().interaction && this.sceneData().interactionType === 'BUTTONS' &&
-          this.sceneData().interactionParameters) {
+        if (this.sceneData().interaction && this.sceneData().interactionType === 'BUTTONS') {
+          console.log(this.sceneData().interactionParameters);
           this.interactionData.set(this.sceneData().interactionParameters || {} as InteractionData);
         }
 
@@ -84,5 +88,15 @@ export class SceneComponent {
         this.animationService.startAnimation();
       }
     });
+  }
+
+  valueChanged(value: string) {
+    if (this.interactionData()?.sharedId) {
+      this.unitService.setNewSharedParameter({
+        key: this.interactionData().sharedId,
+        value: value
+      });
+    }
+    this.animationService.nextAnimation();
   }
 }

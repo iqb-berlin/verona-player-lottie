@@ -1,5 +1,7 @@
 <div class="scene-wrapper" [style.background-color]="unitService.unitData.backgroundColor">
-  <options-parameters [data]="interactionData()"></options-parameters>
+  @if (interactionData().sharedId) {
+    <options-parameters [data]="interactionData()" (valueClicked)="valueChanged($event)"></options-parameters>
+  }
   @if (cockpitData()) {
     <div class="cockpit-wrapper">
       <img [src]="cockpitData()" />
