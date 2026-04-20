@@ -43,6 +43,7 @@ export class SceneComponent {
 
         console.log("sceneData", this.sceneData());
 
+        // TODO make iteration out of it
         const backgroundIds = this.sceneData().backgroundIds || [];
         if (backgroundIds.length > 0 && backgroundIds[0] !== '') {
           const animationSrc = this.unitService.getAnimationSrc(backgroundIds[0]) || '';

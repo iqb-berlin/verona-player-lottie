@@ -38,6 +38,7 @@ export class AnimationService {
     if (this.currentScriptIndex < this.sceneList.length) {
       console.log('startAnimation', this.sceneList[this.currentScriptIndex]);
       this.audioFinished = false;
+      this.hasAudio = false;
       this._currentScene.set(this.sceneList[this.currentScriptIndex]);
       this._currentAnimations.set(this.currentScene()?.animationIds || []);
       // TODO make iteration out of it
@@ -68,6 +69,7 @@ export class AnimationService {
         this._currentMain.set({} as AnimationData);
       }
       if (this.currentScene()?.audioSrc) {
+        this.hasAudio = true;
         this.audioFinished = false;
         this.audioService.setAudioSrc(this.currentScene()?.audioSrc || '')
           .then(() => {
@@ -87,12 +89,18 @@ export class AnimationService {
 
   loopFinished(animationId: string) {
     console.log("loop");
-    if (this.currentScene()?.waitForAudioToFinish === true && this.audioFinished) this.nextAnimation();
+    if (this.hasAudio) {
+      if (this.currentScene()?.waitForAudioToFinish === true && this.audioFinished) this.nextAnimation();
+    }
   }
 
   completed(animationId: string) {
     console.log("completed");
-    if (this.currentScene()?.waitForAudioToFinish === false) this.nextAnimation();
+    if (this.hasAudio) {
+      if (this.currentScene()?.waitForAudioToFinish === false) this.nextAnimation();
+    } else {
+      this.nextAnimation();
+    }
   }
 
   nextAnimation() {

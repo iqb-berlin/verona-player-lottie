@@ -60,6 +60,7 @@ export class ScriptAnimationComponent implements AfterViewInit {
       this._dotLottieScene.addEventListener('loop', ({ loopCount }) => {
         console.log('Animation looped');
         // @ts-ignore
+        if (this.animationData()?.loop) this.completed.emit(this.animationData().id);
         this.loopFinished.emit(this.animationData().id);
       });
       this._dotLottieScene.addEventListener('complete', () => {
