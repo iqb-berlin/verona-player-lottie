@@ -55,19 +55,24 @@ export class AudioService {
     this._audioElement.addEventListener('playing', () => this.setPlayerStatus('playing'));
     this._audioElement.addEventListener('pause', () => this.setPlayerStatus('pause'));
     this._audioElement.addEventListener('ended', () => this.setPlayerStatus('ended'));
+    this._audioElement.addEventListener('loadstart', () => console.log("LOADSTART"));
     this._audioElement.addEventListener('canplay', () => this.setPlayerStatus('canplay'));
+    this._audioElement.addEventListener('canplaythrough', () => this.setPlayerStatus('canplaythrough'));
   }
 
   private setPlayerStatus = (type: MediaEventType) => {
     switch (type) {
       case 'playing':
+        console.log("PLAYING");
         this.playerStatus.next(AudioPlayerStatus.PLAYING);
         break;
       case 'pause':
+        console.log("PAUSED");
         this._isPlaying.set(false);
         this.playerStatus.next(AudioPlayerStatus.PAUSED);
         break;
       case 'ended':
+        console.log("ENDED");
         this._isPlaying.set(false);
         this._playCount.set(this.playCount() + 1);
         this.percentElapsed = 0;
@@ -76,6 +81,7 @@ export class AudioService {
       case 'canplay':
       case 'loadedmetadata':
       case 'canplaythrough':
+        console.log('READY');
         this.playerStatus.next(AudioPlayerStatus.READY);
         break;
       default:
@@ -122,6 +128,7 @@ export class AudioService {
    * @returns Promise<boolean> - resolves to true when the audio is READY
    */
   setAudioSrc(audio: string): Promise<boolean> {
+    console.log("setAudioSrc", audio);
     return new Promise(resolve => {
       // update meta/signals
       this.percentElapsed = 0;
@@ -135,11 +142,13 @@ export class AudioService {
           } catch { /* ignore */ }
           this._audioElement.src = '';
           this._audioElement.load();
+          console.log("cleared");
         }
         this._isPlaying.set(false);
         this._currentSource.set(undefined);
         this.playerStatus.next(AudioPlayerStatus.NO_SOURCE);
         resolve(false);
+        console.log("no audio");
         return;
       }
 
@@ -147,6 +156,7 @@ export class AudioService {
       if (this._audioElement) {
         this._audioElement.src = audio;
         this._audioElement.load();
+        console.log("audio loaded");
       }
       this._currentSource.set(audio);
 
@@ -166,6 +176,7 @@ export class AudioService {
    * @returns Promise<boolean> - resolves to true if the audio source was successfully played
    */
   getPlayFinished(): Promise<boolean> {
+    console.log("play");
     try {
       if (this.getPlayerStatusValue() === AudioPlayerStatus.ENDED && this._audioElement) {
         this._audioElement.currentTime = 0;

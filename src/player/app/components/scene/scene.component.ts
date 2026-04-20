@@ -1,73 +1,103 @@
-import {
-  AfterViewInit, Component, effect, ElementRef, input, output, signal, ViewChild
-} from '@angular/core';
-import { DotLottie } from '@lottiefiles/dotlottie-web';
+import { Component, effect, inject, input, OnInit, output, signal } from '@angular/core';
+
+import { UnitService } from '../../services/unit.service';
+import { AnimationService } from '../../services/animation.service';
+import { ScriptAnimationComponent } from '../script-animation/script-animation.component';
+import { AnimationData, InteractionData, SceneData } from '../../models/unit.model';
+import { OptionsComponent } from '../options/options.component';
 
 @Component({
-  selector: 'lottie-scene',
+  selector: 'scene',
   templateUrl: './scene.component.html',
+  imports: [ScriptAnimationComponent, OptionsComponent],
   styleUrls: ['./scene.component.scss']
 })
 
-export class SceneComponent implements AfterViewInit {
-  animationSrc = input.required<string>();
-  animationId = input.required<string>();
-  autoplay = input<boolean>(true);
-  loop = input<boolean>(true);
-  loopCount = input<number>(0);
-  loopFinished = output<string>();
-  completed = output<string>();
+export class SceneComponent {
+  unitService = inject(UnitService);
+  animationService = inject(AnimationService);
 
-  @ViewChild('sceneCanvas', { static: true }) sceneContainer!: ElementRef<HTMLCanvasElement>;
-  private _dotLottieScene: DotLottie| null = null;
-  animationHidden = signal(true);
+  sceneData = input.required<SceneData>();
+
+  backgroundData= signal<AnimationData>({} as AnimationData);
+  foregroundData= signal<AnimationData>({} as AnimationData);
+  cockpitData = signal<string>('');
+  interactionData = signal<InteractionData>({} as InteractionData );
+
+  oldSceneData = {} as SceneData
+
+  resetData() {
+    this.backgroundData.set({} as AnimationData);
+    this.foregroundData.set({} as AnimationData);
+    this.cockpitData.set('');
+    this.interactionData.set({} as InteractionData);
+  }
 
   constructor() {
+    // new sceneData
     effect(() => {
-      if (this.sceneContainer && this.animationSrc()) {
-        console.log('Creating DotLottie scene', this.animationId(), 'with src', this.animationSrc() );
-        this._dotLottieScene = new DotLottie({
-          canvas: this.sceneContainer.nativeElement,
-          autoplay: this.autoplay(),
-          loop: this.loop(),
-          loopCount: this.loopCount(),
-          src: this.animationSrc(),
-          renderConfig: {
-            autoResize: true,
-            devicePixelRatio: 1,
-          },
-          layout: {
-            fit: 'contain',
-            align: [0.5, 0.5]
+      if (this.sceneData() && this.sceneData() !== this.oldSceneData) {
+        this.resetData();
+
+        this.oldSceneData = this.sceneData();
+
+        console.log("sceneData", this.sceneData());
+
+        // TODO make iteration out of it
+        const backgroundIds = this.sceneData().backgroundIds || [];
+        if (backgroundIds.length > 0 && backgroundIds[0] !== '') {
+          const animationSrc = this.unitService.getAnimationSrc(backgroundIds[0]) || '';
+          if (animationSrc) {
+            this.backgroundData.set({
+              animationSrc: animationSrc,
+              id: 'background',
+              loop: true,
+              loopCount: 0
+            });
+          } else {
+            this.backgroundData.set({} as AnimationData);
           }
-        })
+        }
+
+        const foregroundIds = this.sceneData().foregroundIds || [];
+        if (foregroundIds.length > 0 && foregroundIds[0] !== '') {
+          const animationSrc = this.unitService.getAnimationSrc(foregroundIds[0]) || '';
+          if (animationSrc) {
+            this.foregroundData.set({
+              animationSrc: animationSrc,
+              id: 'foreground',
+              loop: true,
+              loopCount: 0
+            });
+          } else {
+            this.foregroundData.set({} as AnimationData);
+          }
+        }
+
+        if (this.sceneData().interaction && this.sceneData().interactionType === 'BUTTONS') {
+          console.log(this.sceneData().interactionParameters);
+          this.interactionData.set(this.sceneData().interactionParameters || {} as InteractionData);
+        }
+
+        this.cockpitData.set(this.sceneData().cockpitSrc || '');
+
+        console.log("interactionData", this.interactionData());
+        console.log("background", this.backgroundData());
+        console.log("foreground", this.foregroundData());
+
+        this.animationService.setAnimationData(this.sceneData().script);
+        this.animationService.startAnimation();
       }
-      if (this.autoplay()) this.animationHidden.set(false);
     });
   }
 
-  ngAfterViewInit(): void {
-    if (this._dotLottieScene) {
-      this._dotLottieScene.addEventListener('loop', ({ loopCount }) => {
-        this.loopFinished.emit(this.animationId());
-      });
-      this._dotLottieScene.addEventListener('complete', () => {
-        console.log('Animation completed');
-        this.completed.emit(this.animationId());
+  valueChanged(value: string) {
+    if (this.interactionData()?.sharedId) {
+      this.unitService.setNewSharedParameter({
+        key: this.interactionData().sharedId,
+        value: value
       });
     }
-  }
-
-  play() {
-    this.animationHidden.set(false);
-    this._dotLottieScene?.play();
-  }
-
-  stop() {
-    this._dotLottieScene?.stop();
-  }
-
-  hide() {
-    this.animationHidden.set(true);
+    this.animationService.nextAnimation();
   }
 }

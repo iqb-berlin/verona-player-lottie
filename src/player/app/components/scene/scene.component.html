@@ -1,1 +1,40 @@
-<canvas #sceneCanvas [class]="animationId()" [class.hidden]="animationHidden()"></canvas>
+<div class="scene-wrapper" [style.background-color]="unitService.unitData.backgroundColor">
+  @if (interactionData().sharedId) {
+    <options-parameters [data]="interactionData()" (valueClicked)="valueChanged($event)"></options-parameters>
+  }
+  @if (cockpitData()) {
+    <div class="cockpit-wrapper">
+      <img [src]="cockpitData()" />
+    </div>
+  }
+  @if (foregroundData().id) {
+    <div class="foreground-wrapper">
+      <lottie-scene
+        [animationData]="foregroundData()">
+      </lottie-scene>
+    </div>
+  }
+  @if (animationService.currentMain().id) {
+    <div class="main-wrapper">
+      <lottie-scene
+        [animationData]="animationService.currentMain()"
+        (loopFinished)="animationService.loopFinished($event)"
+        (completed)="animationService.completed($event)">
+      </lottie-scene>
+    </div>
+  }
+  @if (animationService.currentSecond().id) {
+    <div class="sec-wrapper">
+      <lottie-scene
+        [animationData]="animationService.currentSecond()">
+      </lottie-scene>
+    </div>
+  }
+  @if (backgroundData().id) {
+    <div class="background-wrapper">
+      <lottie-scene
+        [animationData]="backgroundData()">
+      </lottie-scene>
+    </div>
+  }
+</div>

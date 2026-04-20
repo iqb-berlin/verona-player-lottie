@@ -1,24 +1,54 @@
-export interface SceneData {
-  scene: string;
-  loop: boolean;
-  loopCount?: number;
-  animationIds: string[];
+import { SharedParameter } from '../../../verona/verona.interfaces';
+
+export interface ScriptData {
+  scene: string,
+  loop: boolean,
+  loopCount?: number,
+  animationIds: string[],
   audioSrc?: string,
-  waitForLoopToFinish?: boolean
+  waitForAudioToFinish?: boolean
 }
 
 export interface AnimationData {
-  id: string;
+  id: string,
+  animationSrc?: string,
+  animations?: SharedAnimationData[],
+  loop?: boolean,
+  loopCount?: number,
+  parameterId?: string
+}
+
+export interface SharedAnimationData {
+  id: string,
   animationSrc: string;
 }
 
+export interface SceneData {
+  scene: string;
+  cockpitSrc: string,
+  backgroundIds?: string[],
+  foregroundIds?: string[],
+  script: ScriptData[],
+  interaction?: boolean,
+  interactionType?: string,
+  interactionParameters?: InteractionData
+}
+
 export interface UnitData {
-  backgroundColor: string;
-  cockpitSrc: string;
-  backgroundSrc: string;
-  infiniteLoops: string[];
-  script: SceneData[],
+  backgroundColor: string,
+  scenes: SceneData[],
   animations: AnimationData[]
+}
+
+export interface InteractionOptions {
+  imageSrc: string,
+  label?: string,
+  value: string
+}
+
+export interface InteractionData {
+  sharedId: string,
+  options: InteractionOptions[]
 }
 
 export enum AudioPlayerStatus {
