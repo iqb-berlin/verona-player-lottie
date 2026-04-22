@@ -44,7 +44,8 @@ export class App implements OnInit {
       if (vopStartCommand.sessionId) {
         this.veronaPostService.sessionID = vopStartCommand.sessionId;
         if (vopStartCommand.unitDefinition) {
-          this.unitService.setNewData(vopStartCommand.unitDefinition);
+          const unitDefinition = vopStartCommand.unitDefinition ? JSON.parse(vopStartCommand.unitDefinition) : {};
+          this.unitService.setNewData(unitDefinition);
         }
       }
       if (vopStartCommand.playerConfig) {
