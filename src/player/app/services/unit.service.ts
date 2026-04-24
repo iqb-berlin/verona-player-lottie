@@ -60,6 +60,10 @@ export class UnitService {
   }
 
   setNewSharedParameter(parameter: SharedParameter) {
+    const sharedParameter = this.playerConfig.sharedParameters?.find(v => v.key === parameter.key);
+    if (sharedParameter) {
+      this.playerConfig.sharedParameters?.splice(this.playerConfig.sharedParameters?.indexOf(sharedParameter), 1);
+    }
     this.playerConfig.sharedParameters?.push(parameter);
     this.veronaPostService.sendVopStateChangedNotification({
       playerState: this.playerConfig
@@ -71,6 +75,8 @@ export class UnitService {
     this.currentSceneIndex.update(v => v + 1);
     if (this.currentSceneIndex() < this.unitData.scenes.length) {
       this.sceneData.set(this.unitData.scenes[this.currentSceneIndex()]);
+    } else {
+      this.veronaPostService.sendVopUnitNavigationRequestedNotification('next');
     }
   }
 
