@@ -14,19 +14,12 @@
       </lottie-scene>
     </div>
   }
-  @if (animationService.currentMain().id) {
+  @for (animation of animationService.currentAnimationData(); track $index) {
     <div class="main-wrapper">
       <lottie-scene
-        [animationData]="animationService.currentMain()"
+        [animationData]="animation"
         (loopFinished)="animationService.loopFinished($event)"
         (completed)="animationService.completed($event)">
-      </lottie-scene>
-    </div>
-  }
-  @if (animationService.currentSecond().id) {
-    <div class="sec-wrapper">
-      <lottie-scene
-        [animationData]="animationService.currentSecond()">
       </lottie-scene>
     </div>
   }

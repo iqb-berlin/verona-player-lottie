@@ -17,10 +17,8 @@ export class AnimationService {
   private _currentScene = signal<ScriptData>({} as ScriptData);
   currentScene = this._currentScene.asReadonly();
 
-  private _currentMain = signal<AnimationData>({} as AnimationData);
-  currentMain = this._currentMain.asReadonly();
-  private _currentSecond = signal<AnimationData>({} as AnimationData);
-  currentSecond = this._currentSecond.asReadonly();
+  private _currentAnimationData = signal<AnimationData[]>([]);
+  currentAnimationData = this._currentAnimationData.asReadonly();
 
   private sceneList: ScriptData[] = [];
   private currentScriptIndex = 0;
@@ -41,33 +39,24 @@ export class AnimationService {
       this.hasAudio = false;
       this._currentScene.set(this.sceneList[this.currentScriptIndex]);
       this._currentAnimations.set(this.currentScene()?.animationIds || []);
-      // TODO make iteration out of it
-      if (this.currentAnimations().length > 0) {
-        const animationSrc = this.unitService.getAnimationSrc(this.currentAnimations()[0]);
+      this._currentAnimationData.set([]);
+
+      console.log(this._currentAnimations());
+      this._currentAnimations().forEach((data, index) => {
+        const animationSrc = this.unitService.getAnimationSrc(data);
+        const animationData: AnimationData = {} as AnimationData;
         if (animationSrc) {
-          this._currentMain.set({
-            animationSrc: animationSrc,
-            id: 'main',
-            loop: this.currentScene()?.loop || false,
-            loopCount: this.currentScene()?.loopCount || 0
-          });
-        } else {
-          this._currentScene.set({} as ScriptData);
+          animationData.animationSrc = animationSrc;
+          animationData.id = 'main_' + index;
+          animationData.loop = this.currentScene()?.loop || false;
+          animationData.loopCount = this.currentScene()?.loopCount || 0;
         }
-        if (this.currentAnimations().length > 1) {
-          const animationSrc = this.unitService.getAnimationSrc(this.currentAnimations()[1]);
-          this._currentSecond.set({
-            animationSrc: animationSrc,
-            id: 'second',
-            loop: this.currentScene()?.loop || false,
-            loopCount: this.currentScene()?.loopCount || 0
-          });
-        } else {
-          this._currentSecond.set({} as AnimationData);
-        }
-      } else {
-        this._currentMain.set({} as AnimationData);
-      }
+        const currentAnimationData = this.currentAnimationData();
+        currentAnimationData.push(animationData);
+        this._currentAnimationData.set(currentAnimationData);
+        console.log(this.currentAnimationData());
+      })
+
       if (this.currentScene()?.audioSrc) {
         this.hasAudio = true;
         this.audioFinished = false;

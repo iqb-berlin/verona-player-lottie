@@ -1,6 +1,7 @@
 import { Component, effect, input, output, signal } from '@angular/core';
 
 import { InteractionData, InteractionOptions } from '../../models/unit.model';
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'options-parameters',
