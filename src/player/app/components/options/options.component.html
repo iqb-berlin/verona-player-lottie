@@ -9,7 +9,11 @@
         (click)="onClick(opt.value)"
       />
       <label [for]="data().sharedId + '_' + opt.value">
-        <span>{{ opt.value }}</span>
+        @if (opt.imageSrc) {
+          <img [src]="opt.imageSrc" [alt]="opt.value">
+        } @else {
+          <span>{{ opt.value }}</span>
+        }
       </label>
     </div>
   }
