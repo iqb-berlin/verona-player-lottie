@@ -1,5 +1,8 @@
 # Release Notes #
 
+### Release Note 1.0.4 ###
+- Neu: speed als Parameter für Animationen
+
 ### Release Note 1.0.3 ###
 - bugfixes
 - Animationen zu Optionskomponente zur Avatar Auswahl
