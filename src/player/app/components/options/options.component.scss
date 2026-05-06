@@ -28,8 +28,17 @@
     }
 
     label {
+      position: relative;
       width: 175px;
       height: 175px;
+
+      .animation-wrapper {
+        position: absolute;
+        bottom: 5%;
+        right: 5%;
+        left: 5%;
+        top: 5%;
+      }
 
       img {
         display: block;
