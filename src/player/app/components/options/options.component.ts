@@ -36,6 +36,7 @@ export class OptionsComponent {
       animationData.id = option.value;
       animationData.loop = true;
       animationData.loopCount = 0;
+      animationData.speed = option.speed || 1;
     }
     return animationData;
   }

@@ -36,6 +36,7 @@ export class ScriptAnimationComponent implements AfterViewInit {
           loop: this.animationData()?.loop || false,
           loopCount: this.animationData()?.loopCount || 0,
           src: this.animationData()?.animationSrc as string,
+          speed: this.animationData().speed as number || 1,
           renderConfig: {
             autoResize: true,
             devicePixelRatio: 1,
