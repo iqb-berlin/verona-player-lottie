@@ -13,14 +13,16 @@ import { AnimationData } from '../../models/unit.model';
 export class ScriptAnimationComponent implements AfterViewInit {
   animationData = input<AnimationData >({} as AnimationData);
   autoplay = input<boolean>(true);
+  _autoplay = true;
   loopFinished = output<string>();
   completed = output<string>();
 
   @ViewChild('sceneCanvas', { static: true }) sceneContainer!: ElementRef<HTMLCanvasElement>;
   private _dotLottieScene: DotLottie| null = null;
-  animationHidden = signal(true);
+  animationHidden = signal(false);
 
   constructor() {
+
     effect(() => {
       if (this.sceneContainer && this.animationData()?.animationSrc) {
         console.log("AnimationData", this.animationData());
@@ -49,6 +51,23 @@ export class ScriptAnimationComponent implements AfterViewInit {
         this._dotLottieScene?.destroy();
       }
     });
+
+    effect(() => {
+      // this._autoplay = this.autoplay();
+      // console.log("Autoplay", this._autoplay);
+      // if (this._dotLottieScene) {
+      //   if (this._autoplay) {
+      //     console.log("play", this._autoplay);
+      //     this._dotLottieScene.stop();
+      //     this._dotLottieScene.play();
+      //     this.animationHidden.set(false);
+      //   }
+      //   else {
+      //     this._dotLottieScene.pause();
+      //     this.animationHidden.set(true);
+      //   }
+      // }
+    });
   }
 
   ngAfterViewInit() {
@@ -56,7 +75,7 @@ export class ScriptAnimationComponent implements AfterViewInit {
   }
 
   addListeners(): void {
-    if (this._dotLottieScene && this.animationData() !== undefined) {
+    if (this._dotLottieScene && this.animationData()?.animationSrc !== undefined) {
       this._dotLottieScene.addEventListener('loop', ({ loopCount }) => {
         console.log('Animation looped');
         // @ts-ignore
@@ -68,6 +87,15 @@ export class ScriptAnimationComponent implements AfterViewInit {
         // @ts-ignore
         this.completed.emit(this.animationData().id);
       });
+      this._dotLottieScene.addEventListener('ready', () => console.log('Ready'));
+      this._dotLottieScene.addEventListener('load', () => {
+        console.log('Loaded');
+        // if (this._autoplay) {
+        //   this._dotLottieScene?.play();
+        // }
+      });
+      this._dotLottieScene.addEventListener('play', () => console.log('Playing'));
+      this._dotLottieScene.addEventListener('pause', () => console.log('Paused'));
     }
   }
 
@@ -76,13 +104,5 @@ export class ScriptAnimationComponent implements AfterViewInit {
       this._dotLottieScene.removeEventListener('loop', ({ loopCount }) => {});
       this._dotLottieScene.removeEventListener('complete', () => {});
     }
-  }
-
-  play() {
-    this._dotLottieScene?.play();
-  }
-
-  stop() {
-    this._dotLottieScene?.stop();
   }
 }

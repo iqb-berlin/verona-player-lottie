@@ -10,7 +10,16 @@
       />
       <label [for]="data().sharedId + '_' + opt.value">
         @if (opt.imageSrc) {
-          <img [src]="opt.imageSrc" [alt]="opt.value">
+          @if (isAnimation(opt.imageSrc)) {
+            <div class="animation-wrapper">
+              <lottie-scene
+                [autoplay]="true"
+                [animationData]="getAnimationData(opt)">
+              </lottie-scene>
+            </div>
+          } @else {
+            <img [src]="opt.imageSrc" [alt]="opt.value">
+          }
         } @else {
           <span>{{ opt.value }}</span>
         }
