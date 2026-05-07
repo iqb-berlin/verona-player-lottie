@@ -1,5 +1,8 @@
 # Release Notes #
 
+### Release Note 1.0.5 ###
+- Fix: Metadata in vopReadyNotification
+
 ### Release Note 1.0.4 ###
 - Neu: speed als Parameter für Animationen
 

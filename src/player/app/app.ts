@@ -6,11 +6,11 @@ import { VeronaSubscriptionService } from '../../verona/player/verona-subscripti
 import { StandaloneMenuComponent, SceneComponent } from './components';
 import { UnitService } from './services/unit.service';
 import {
-  VeronaMetaData,
   VopPlayerConfigChangedNotification,
   VopStartCommand
 } from '../../verona/verona.interfaces';
 import { AnimationService } from './services/animation.service';
+import { MetadataService } from './services/metadata.service';
 
 @Component({
   selector: 'app-root',
@@ -26,6 +26,7 @@ export class App implements OnInit {
   isStandalone = false;
 
   unitService = inject(UnitService);
+  metadataService = inject(MetadataService);
   animationService = inject(AnimationService);
   veronaPostService = inject(VeronaPostService);
   veronaSubscriptionService = inject(VeronaSubscriptionService);
@@ -38,7 +39,7 @@ export class App implements OnInit {
   }
 
   initializeEvents() {
-    this.veronaPostService.sendVopReadyNotification({} as VeronaMetaData)
+    this.veronaPostService.sendVopReadyNotification(this.metadataService.playerMetadata);
     this.veronaSubscriptionService.vopStartCommand.subscribe( (vopStartCommand: VopStartCommand) => {
       console.log('VopStartCommand', vopStartCommand);
       if (vopStartCommand.sessionId) {
