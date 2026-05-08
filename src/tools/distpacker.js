@@ -98,10 +98,11 @@ function replaceLinkedAssetsInJS(jsString) {
       const file = folder + subfolder + src;
       if (existsSync(file)) {
         const base64Str = base64Encode(file);
+        const mimeType = ext === 'wasm' ? 'application/wasm' : 'image/' + ext;
         if (firstSign === '"') {
-          return '"data:image/' + ext + ';base64,' + base64Str + '"'; // ATTENTION with " & '
+          return '"data:' + mimeType + ';base64,' + base64Str + '"'; // ATTENTION with " & '
         }
-        return "'data:image/" + ext + ";base64," + base64Str + "'"; // ATTENTION with " & '
+        return "'data:" + mimeType + ";base64," + base64Str + "'"; // ATTENTION with " & '
       }
       return a;
     } catch (e) {
