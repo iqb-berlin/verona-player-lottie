@@ -1,5 +1,8 @@
 # Release Notes #
 
+### Release Note 1.0.6 ###
+- LottieWeb-Player als inline wasm hinzugefügt
+
 ### Release Note 1.0.5 ###
 - Fix: Metadata in vopReadyNotification
 
