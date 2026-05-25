@@ -2,18 +2,26 @@ export interface ScriptData {
   scene: string,
   loop: boolean,
   loopCount?: number,
-  animationIds: string[],
+  animationIds: SceneAnimationData[],
   audioSrc?: string,
   waitForAudioToFinish?: boolean
 }
 
-export interface AnimationData {
+export interface AnimationSources {
   id: string,
+  slotId: string,
   animationSrc?: string,
   animations?: SharedAnimationData[],
   loop?: boolean,
   loopCount?: number,
   parameterId?: string,
+  speed?: number
+}
+
+export interface SceneAnimationData {
+  slotId: string,
+  animationId: string,
+  loop?: boolean,
   speed?: number
 }
 
@@ -30,13 +38,13 @@ export interface SceneData {
   script: ScriptData[],
   interaction?: boolean,
   interactionType?: string,
-  interactionParameters?: InteractionData
+  interactionParameters?: InteractionParameters
 }
 
 export interface UnitData {
   backgroundColor: string,
   scenes: SceneData[],
-  animations: AnimationData[]
+  animations: AnimationSources[]
 }
 
 export interface InteractionOptions {
@@ -46,7 +54,7 @@ export interface InteractionOptions {
   speed?: number
 }
 
-export interface InteractionData {
+export interface InteractionParameters {
   sharedId: string,
   options: InteractionOptions[]
 }

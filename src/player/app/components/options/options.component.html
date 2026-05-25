@@ -12,10 +12,9 @@
         @if (opt.imageSrc) {
           @if (isAnimation(opt.imageSrc)) {
             <div class="animation-wrapper">
-              <lottie-scene
-                [autoplay]="true"
+              <lottie-animation
                 [animationData]="getAnimationData(opt)">
-              </lottie-scene>
+              </lottie-animation>
             </div>
           } @else {
             <img [src]="opt.imageSrc" [alt]="opt.value">

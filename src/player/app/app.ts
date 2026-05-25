@@ -27,7 +27,6 @@ export class App implements OnInit {
 
   unitService = inject(UnitService);
   metadataService = inject(MetadataService);
-  animationService = inject(AnimationService);
   veronaPostService = inject(VeronaPostService);
   veronaSubscriptionService = inject(VeronaSubscriptionService);
 

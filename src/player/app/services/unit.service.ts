@@ -81,7 +81,6 @@ export class UnitService {
   }
 
   getAnimationSrc(animationId: string): string {
-    console.log("getAnimationSrc", animationId);
     const animationSrc = this.unitData.animations.find((a) => a.id === animationId);
     if (animationSrc?.animationSrc) {
       return animationSrc?.animationSrc as string;
@@ -89,7 +88,6 @@ export class UnitService {
       if (animationSrc?.animations && animationSrc?.parameterId) {
         const parameter = this.playerConfig.sharedParameters?.find(v => v.key === animationSrc.parameterId)?.value || undefined;
         if (parameter) {
-          console.log('ani', animationSrc);
           return animationSrc.animations.find(v => v.id === parameter)?.animationSrc || '';
         } else {
           return animationSrc.animations[0].animationSrc || '';

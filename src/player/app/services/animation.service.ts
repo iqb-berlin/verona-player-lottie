@@ -1,7 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 
 import { UnitService } from './unit.service';
-import { AnimationData, ScriptData } from '../models/unit.model';
+import { AnimationSources, SceneAnimationData, ScriptData } from '../models/unit.model';
 import { AudioService } from './audio.service';
 
 @Injectable({
@@ -12,12 +12,12 @@ export class AnimationService {
   unitService = inject(UnitService);
   audioService = inject(AudioService);
 
-  private _currentAnimations = signal<string[]>([]);
+  private _currentAnimations = signal<SceneAnimationData[]>([]);
   currentAnimations = this._currentAnimations.asReadonly();
   private _currentScene = signal<ScriptData>({} as ScriptData);
   currentScene = this._currentScene.asReadonly();
 
-  private _currentAnimationData = signal<AnimationData[]>([]);
+  private _currentAnimationData = signal<AnimationSources[]>([]);
   currentAnimationData = this._currentAnimationData.asReadonly();
 
   private sceneList: ScriptData[] = [];
@@ -43,13 +43,15 @@ export class AnimationService {
 
       console.log(this._currentAnimations());
       this._currentAnimations().forEach((data, index) => {
-        const animationSrc = this.unitService.getAnimationSrc(data);
-        const animationData: AnimationData = {} as AnimationData;
+        const animationSrc = this.unitService.getAnimationSrc(data.animationId);
+        const animationData: AnimationSources = {} as AnimationSources;
         if (animationSrc) {
           animationData.animationSrc = animationSrc;
-          animationData.id = 'main_' + index;
-          animationData.loop = this.currentScene()?.loop || false;
-          animationData.loopCount = this.currentScene()?.loopCount || 0;
+          animationData.slotId = data.slotId;
+          animationData.id = data.animationId;
+          animationData.loop = data.loop || false;
+          animationData.speed = data.speed || 1;
+          animationData.loopCount = 0; // Use 0 for infinite or managed by dotlottie
         }
         const currentAnimationData = this.currentAnimationData();
         currentAnimationData.push(animationData);

@@ -1,26 +1,23 @@
 import { Component, effect, input, output, signal } from '@angular/core';
 
-import { AnimationData, InteractionData, InteractionOptions } from '../../models/unit.model';
-import { ScriptAnimationComponent } from '../script-animation/script-animation.component';
+import { AnimationSources, InteractionParameters, InteractionOptions } from '../../models/unit.model';
+import { AnimationComponent } from '../animation/animation.component';
 
 @Component({
   selector: 'options-parameters',
   templateUrl: './options.component.html',
-  imports: [
-    ScriptAnimationComponent
-  ],
+  imports: [AnimationComponent],
   styleUrls: ['./options.component.scss']
 })
 
 export class OptionsComponent {
-  data = input.required<InteractionData>();
-  valueClicked = output<string>();
+  data = input.required<InteractionParameters>();
+  optionClicked = output<string>();
 
   options = signal<InteractionOptions[]>([]);
 
   constructor() {
     effect(() => {
-      console.log('option', this.data());
       this.options.set(this.data().options || []);
     });
   }
@@ -30,7 +27,7 @@ export class OptionsComponent {
   }
 
   getAnimationData(option: InteractionOptions) {
-    const animationData: AnimationData = {} as AnimationData;
+    const animationData: AnimationSources = {} as AnimationSources;
     if (option.imageSrc) {
       animationData.animationSrc = option.imageSrc;
       animationData.id = option.value;
@@ -42,6 +39,6 @@ export class OptionsComponent {
   }
 
   onClick(value: string) {
-    this.valueClicked.emit(value);
+    this.optionClicked.emit(value);
   }
 }
