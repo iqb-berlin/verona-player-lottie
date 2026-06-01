@@ -6,11 +6,11 @@ import { AnimationData } from '../../models/unit.model';
 
 @Component({
   selector: 'lottie-scene',
-  templateUrl: './script-animation.component.html',
-  styleUrls: ['./script-animation.component.scss']
+  templateUrl: './animation.component.html',
+  styleUrls: ['./animation.component.scss']
 })
 
-export class ScriptAnimationComponent implements AfterViewInit {
+export class AnimationComponent implements AfterViewInit {
   animationData = input<AnimationData >({} as AnimationData);
   autoplay = input<boolean>(true);
   _autoplay = true;

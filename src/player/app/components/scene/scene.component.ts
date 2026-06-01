@@ -2,14 +2,14 @@ import { Component, effect, inject, input, OnInit, output, signal } from '@angul
 
 import { UnitService } from '../../services/unit.service';
 import { AnimationService } from '../../services/animation.service';
-import { ScriptAnimationComponent } from '../script-animation/script-animation.component';
+import { AnimationComponent } from '../animation/animation.component';
 import { AnimationData, InteractionData, SceneData } from '../../models/unit.model';
 import { OptionsComponent } from '../options/options.component';
 
 @Component({
   selector: 'scene',
   templateUrl: './scene.component.html',
-  imports: [ScriptAnimationComponent, OptionsComponent],
+  imports: [AnimationComponent, OptionsComponent],
   styleUrls: ['./scene.component.scss']
 })
 
