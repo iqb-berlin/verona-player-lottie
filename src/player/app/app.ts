@@ -9,7 +9,6 @@ import {
   VopPlayerConfigChangedNotification,
   VopStartCommand
 } from '../../verona/verona.interfaces';
-import { AnimationService } from './services/animation.service';
 import { MetadataService } from './services/metadata.service';
 
 @Component({
@@ -27,7 +26,6 @@ export class App implements OnInit {
 
   unitService = inject(UnitService);
   metadataService = inject(MetadataService);
-  animationService = inject(AnimationService);
   veronaPostService = inject(VeronaPostService);
   veronaSubscriptionService = inject(VeronaSubscriptionService);
 
@@ -51,6 +49,9 @@ export class App implements OnInit {
       }
       if (vopStartCommand.playerConfig) {
         this.unitService.setPlayerConfig(vopStartCommand.playerConfig);
+        if (vopStartCommand.playerConfig.directDownloadUrl) {
+          this.unitService.addDirectDownload(vopStartCommand.playerConfig.directDownloadUrl);
+        }
       }
     });
     this.veronaSubscriptionService.vopPlayerConfigChangedNotification.subscribe(
