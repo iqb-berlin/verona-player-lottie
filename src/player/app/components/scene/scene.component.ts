@@ -1,15 +1,16 @@
-import { Component, effect, inject, input, OnInit, output, signal } from '@angular/core';
+import { Component, effect, inject, input, signal } from '@angular/core';
 
 import { UnitService } from '../../services/unit.service';
 import { AnimationService } from '../../services/animation.service';
 import { AnimationComponent } from '../animation/animation.component';
 import { AnimationData, InteractionData, SceneData } from '../../models/unit.model';
 import { OptionsComponent } from '../options/options.component';
+import { ClickLayerComponent } from '../Click-Layer/click-layer.component';
 
 @Component({
   selector: 'scene',
   templateUrl: './scene.component.html',
-  imports: [AnimationComponent, OptionsComponent],
+  imports: [AnimationComponent, OptionsComponent, ClickLayerComponent],
   styleUrls: ['./scene.component.scss']
 })
 
@@ -23,6 +24,7 @@ export class SceneComponent {
   foregroundData= signal<AnimationData>({} as AnimationData);
   cockpitData = signal<string>('');
   interactionData = signal<InteractionData>({} as InteractionData );
+  interactionType = signal<string>('');
 
   oldSceneData = {} as SceneData
 
@@ -74,9 +76,11 @@ export class SceneComponent {
           }
         }
 
-        if (this.sceneData().interaction && this.sceneData().interactionType === 'BUTTONS') {
+        if (this.sceneData().interaction && this.sceneData().interactionType) {
           console.log(this.sceneData().interactionParameters);
-          this.interactionData.set(this.sceneData().interactionParameters || {} as InteractionData);
+          this.interactionType.set(this.sceneData().interactionType || '');
+          if (this.interactionType() === 'BUTTONS')
+            this.interactionData.set(this.sceneData().interactionParameters || {} as InteractionData);
         }
 
         this.cockpitData.set(this.sceneData().cockpitSrc || '');
@@ -91,7 +95,7 @@ export class SceneComponent {
     });
   }
 
-  valueChanged(value: string) {
+  valueChanged(value: any) {
     if (this.interactionData()?.sharedId) {
       this.unitService.setNewSharedParameter({
         key: this.interactionData().sharedId,

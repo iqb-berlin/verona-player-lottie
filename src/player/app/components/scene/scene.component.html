@@ -1,6 +1,9 @@
 <div class="scene-wrapper" [style.background-color]="unitService.unitData.backgroundColor">
-  @if (interactionData().sharedId) {
+  @if (interactionType() === "BUTTONS" && interactionData().sharedId) {
     <options-parameters [data]="interactionData()" (valueClicked)="valueChanged($event)"></options-parameters>
+  }
+  @if (interactionType() === "CLICK_LAYER") {
+    <click-layer (hasClicked)="valueChanged($event)"></click-layer>
   }
   @if (cockpitData()) {
     <div class="cockpit-wrapper">
