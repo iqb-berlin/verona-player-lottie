@@ -5,7 +5,7 @@ import { AnimationService } from '../../services/animation.service';
 import { AnimationComponent } from '../animation/animation.component';
 import { AnimationData, InteractionData, SceneData } from '../../models/unit.model';
 import { OptionsComponent } from '../options/options.component';
-import { ClickLayerComponent } from '../Click-Layer/click-layer.component';
+import { ClickLayerComponent } from '../click-layer/click-layer.component';
 
 @Component({
   selector: 'scene',
