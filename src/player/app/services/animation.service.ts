@@ -47,7 +47,7 @@ export class AnimationService {
         const animationData: AnimationData = {} as AnimationData;
         if (animationSrc) {
           animationData.animationSrc = animationSrc;
-          animationData.id = 'main_' + index;
+          animationData.id = data;
           animationData.loop = this.currentScene()?.loop || false;
           animationData.loopCount = this.currentScene()?.loopCount || 0;
         }

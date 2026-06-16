@@ -1,6 +1,9 @@
 <div class="scene-wrapper" [style.background-color]="unitService.unitData.backgroundColor">
-  @if (interactionData().sharedId) {
+  @if (interactionType() === "BUTTONS" && interactionData().sharedId) {
     <options-parameters [data]="interactionData()" (valueClicked)="valueChanged($event)"></options-parameters>
+  }
+  @if (interactionType() === "CLICK_LAYER") {
+    <click-layer (hasClicked)="valueChanged($event)"></click-layer>
   }
   @if (cockpitData()) {
     <div class="cockpit-wrapper">
@@ -15,7 +18,7 @@
     </div>
   }
   @for (animation of animationService.currentAnimationData(); track $index) {
-    <div class="main-wrapper">
+    <div class="main-wrapper" [style.z-index]="(animation.id === 'bubble_transition_in' || animation.id === 'bubble_transition_out') ? 30 : 10">
       <lottie-scene
         [animationData]="animation"
         (loopFinished)="animationService.loopFinished($event)"
