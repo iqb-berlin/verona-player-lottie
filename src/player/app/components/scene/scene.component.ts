@@ -52,7 +52,7 @@ export class SceneComponent {
           if (animationSrc) {
             this.backgroundData.set({
               animationSrc: animationSrc,
-              id: 'background',
+              id: backgroundIds[0],
               loop: true,
               loopCount: 0
             });
@@ -67,7 +67,7 @@ export class SceneComponent {
           if (animationSrc) {
             this.foregroundData.set({
               animationSrc: animationSrc,
-              id: 'foreground',
+              id: foregroundIds[0],
               loop: true,
               loopCount: 0
             });
