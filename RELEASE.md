@@ -1,5 +1,12 @@
 # Release Notes #
 
+### Release Note 1.0.8 ###
+- bugfixes
+- workaround für Blasenvorhang -> wird in neuer lottie-unit-spec 2.x umgesetzt
+
+### Release Note 1.0.7 ###
+- Click Layer als Interaktionstyp hinzugefügt
+
 ### Release Note 1.0.6 ###
 - LottieWeb-Player als inline wasm hinzugefügt
 
