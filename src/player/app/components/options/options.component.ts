@@ -1,13 +1,13 @@
 import { Component, effect, input, output, signal } from '@angular/core';
 
 import { AnimationData, InteractionData, InteractionOptions } from '../../models/unit.model';
-import { ScriptAnimationComponent } from '../script-animation/script-animation.component';
+import { AnimationComponent } from '../animation/animation.component';
 
 @Component({
   selector: 'options-parameters',
   templateUrl: './options.component.html',
   imports: [
-    ScriptAnimationComponent
+    AnimationComponent
   ],
   styleUrls: ['./options.component.scss']
 })

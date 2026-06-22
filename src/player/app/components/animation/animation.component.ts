@@ -1,31 +1,36 @@
 import {
-  AfterViewInit, Component, effect, ElementRef, input, output, signal, ViewChild
+  AfterViewInit, Component, effect, ElementRef, input, output, ViewChild
 } from '@angular/core';
 import { DotLottie } from '@lottiefiles/dotlottie-web';
 import { AnimationData } from '../../models/unit.model';
 
 @Component({
   selector: 'lottie-scene',
-  templateUrl: './script-animation.component.html',
-  styleUrls: ['./script-animation.component.scss']
+  templateUrl: './animation.component.html',
+  styleUrls: ['./animation.component.scss']
 })
 
-export class ScriptAnimationComponent implements AfterViewInit {
+export class AnimationComponent implements AfterViewInit {
   animationData = input<AnimationData >({} as AnimationData);
   autoplay = input<boolean>(true);
-  _autoplay = true;
+
   loopFinished = output<string>();
   completed = output<string>();
 
   @ViewChild('sceneCanvas', { static: true }) sceneContainer!: ElementRef<HTMLCanvasElement>;
-  private _dotLottieScene: DotLottie| null = null;
-  animationHidden = signal(false);
+  private _dotLottieScene: DotLottie | null = null;
+  private _currentAnimationId = '';
 
   constructor() {
 
     effect(() => {
       if (this.sceneContainer && this.animationData()?.animationSrc) {
         console.log("AnimationData", this.animationData());
+
+        if (this._currentAnimationId === this.animationData().id) return;
+
+        this._currentAnimationId = this.animationData().id;
+
         if (this._dotLottieScene) {
           this._dotLottieScene.destroy();
           this.removeListeners();
@@ -51,23 +56,6 @@ export class ScriptAnimationComponent implements AfterViewInit {
         console.log('no animation');
         this._dotLottieScene?.destroy();
       }
-    });
-
-    effect(() => {
-      // this._autoplay = this.autoplay();
-      // console.log("Autoplay", this._autoplay);
-      // if (this._dotLottieScene) {
-      //   if (this._autoplay) {
-      //     console.log("play", this._autoplay);
-      //     this._dotLottieScene.stop();
-      //     this._dotLottieScene.play();
-      //     this.animationHidden.set(false);
-      //   }
-      //   else {
-      //     this._dotLottieScene.pause();
-      //     this.animationHidden.set(true);
-      //   }
-      // }
     });
   }
 
