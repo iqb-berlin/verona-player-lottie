@@ -58,11 +58,11 @@ export class UnitService {
   }
 
   addDirectDownload(directDownloadUrl: string) {
-    const completeUrl = new URL(directDownloadUrl, parent.location.origin).toString();
+    const completeUrl = new URL(directDownloadUrl, parent.location.origin).toString().replace(/\/+$/, '');
 
     console.log("DDL", completeUrl);
 
-    fetch(completeUrl + '/avatar.json')
+    fetch(completeUrl + '/avatar/avatar.json')
       .then(response => {
         if (!response.ok) {
           throw new Error(`Failed to load avatar.json: ${response.status} ${response.statusText}`);
