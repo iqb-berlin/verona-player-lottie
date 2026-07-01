@@ -127,6 +127,20 @@ export class UnitService {
         }
       }
     }
+    const animationSrcExternal = this.externalUnitData.animations.find((a) => a.id === animationId);
+    if (animationSrcExternal?.animationSrc) {
+      return animationSrcExternal?.animationSrc as string;
+    } else {
+      if (animationSrcExternal?.animations && animationSrcExternal?.parameterId) {
+        const parameter = this.playerConfig.sharedParameters?.find(v => v.key === animationSrcExternal.parameterId)?.value || undefined;
+        if (parameter) {
+          console.log('ani', animationSrcExternal);
+          return animationSrcExternal.animations.find(v => v.id === parameter)?.animationSrc || '';
+        } else {
+          return animationSrcExternal.animations[0].animationSrc || '';
+        }
+      }
+    }
     return '';
   }
 }

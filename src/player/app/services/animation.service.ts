@@ -45,11 +45,14 @@ export class AnimationService {
       this._currentAnimations().forEach((data, index) => {
         const animationSrc = this.unitService.getAnimationSrc(data);
         const animationData: AnimationData = {} as AnimationData;
+        let loopCount = 0;
+        if (data.startsWith('avatar')) loopCount = this.currentScene()?.loopCount || 0;
+        if (data.startsWith('bubble')) loopCount = 1;
         if (animationSrc) {
           animationData.animationSrc = animationSrc;
           animationData.id = data;
           animationData.loop = this.currentScene()?.loop || false;
-          animationData.loopCount = this.currentScene()?.loopCount || 0;
+          animationData.loopCount = loopCount || 0;
         }
         const currentAnimationData = this.currentAnimationData();
         currentAnimationData.push(animationData);
@@ -77,17 +80,18 @@ export class AnimationService {
   }
 
   loopFinished(animationId: string) {
-    console.log("loop");
+    console.log("loop", animationId);
     if (this.hasAudio) {
       if (this.currentScene()?.waitForAudioToFinish === true && this.audioFinished) this.nextAnimation();
     }
   }
 
   completed(animationId: string) {
-    console.log("completed");
+    console.log("completed", animationId);
     if (this.hasAudio) {
       if (this.currentScene()?.waitForAudioToFinish === false) this.nextAnimation();
     } else {
+      if (this.currentScene()?.loopCount === 0) return;
       this.nextAnimation();
     }
   }
