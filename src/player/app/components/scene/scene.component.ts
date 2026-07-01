@@ -44,7 +44,7 @@ export class SceneComponent {
 
         this.oldSceneData = this.sceneData();
 
-        console.log("sceneData", this.sceneData());
+        // console.log("sceneData", this.sceneData());
 
         // TODO make iteration out of it
         const backgroundIds = this.sceneData().backgroundIds || [];
@@ -85,9 +85,9 @@ export class SceneComponent {
 
         this.cockpitData.set(this.sceneData().cockpitSrc || '');
 
-        console.log("interactionData", this.interactionData());
-        console.log("background", this.backgroundData());
-        console.log("foreground", this.foregroundData());
+        // console.log("interactionData", this.interactionData());
+        // console.log("background", this.backgroundData());
+        // console.log("foreground", this.foregroundData());
 
         this.animationService.setAnimationData(this.sceneData().script);
         this.animationService.startAnimation();
@@ -96,7 +96,7 @@ export class SceneComponent {
   }
 
   valueChanged(value: any) {
-    console.log('valueChanged', value);
+    // console.log('valueChanged', value);
     if (this.interactionData()?.sharedId) {
       this.unitService.setNewSharedParameter({
         key: this.interactionData().sharedId,

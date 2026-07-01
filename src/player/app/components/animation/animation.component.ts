@@ -25,7 +25,7 @@ export class AnimationComponent implements AfterViewInit {
 
     effect(() => {
       if (this.sceneContainer && this.animationData()?.animationSrc) {
-        console.log("new AnimationData", this.animationData());
+        // console.log("new AnimationData", this.animationData());
 
         if (this._currentAnimationId === this.animationData().id) return;
 
@@ -54,7 +54,7 @@ export class AnimationComponent implements AfterViewInit {
         });
         this.addListeners();
       } else {
-        console.log('no animation');
+        // console.log('no animation');
         this._dotLottieScene?.destroy();
       }
     });
@@ -66,27 +66,27 @@ export class AnimationComponent implements AfterViewInit {
 
   addListeners(): void {
     if (this._dotLottieScene && this.animationData()?.animationSrc !== undefined) {
-      console.log(this._dotLottieScene.loopCount);
+      // console.log(this._dotLottieScene.loopCount);
       this._dotLottieScene.addEventListener('loop', ({ loopCount }) => {
-        console.log('Animation looped');
+        // console.log('Animation looped');
         // @ts-ignore
         if (!this.animationData()?.loop) this.completed.emit(this.animationData().id);
         this.loopFinished.emit(this.animationData().id);
       });
       this._dotLottieScene.addEventListener('complete', () => {
-        console.log('Animation completed');
+        // console.log('Animation completed');
         // @ts-ignore
         this.completed.emit(this.animationData().id);
       });
-      this._dotLottieScene.addEventListener('ready', () => console.log('Ready'));
-      this._dotLottieScene.addEventListener('load', () => {
-        console.log('Loaded');
-        // if (this._autoplay) {
-        //   this._dotLottieScene?.play();
-        // }
-      });
-      this._dotLottieScene.addEventListener('play', () => console.log('Playing'));
-      this._dotLottieScene.addEventListener('pause', () => console.log('Paused'));
+      // this._dotLottieScene.addEventListener('ready', () => console.log('Ready'));
+      // this._dotLottieScene.addEventListener('load', () => {
+      //   console.log('Loaded');
+      //   // if (this._autoplay) {
+      //   //   this._dotLottieScene?.play();
+      //   // }
+      // });
+      // this._dotLottieScene.addEventListener('play', () => console.log('Playing'));
+      // this._dotLottieScene.addEventListener('pause', () => console.log('Paused'));
     }
   }
 

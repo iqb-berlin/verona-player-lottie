@@ -1,7 +1,5 @@
-import { inject, Injectable, Renderer2 } from '@angular/core';
+import { Injectable, Renderer2 } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-
-import { UnitService } from './unit.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +18,7 @@ export class ExternalResourceService {
         this.externalDataInitialized.next(true);
       };
       script.onerror = (message: string) => {
-        console.log('external data not loading', message);
+        // console.log('external data not loading', message);
       };
       renderer.appendChild(document.head, script);
     }

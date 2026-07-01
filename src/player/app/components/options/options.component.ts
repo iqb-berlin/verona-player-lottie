@@ -20,7 +20,7 @@ export class OptionsComponent {
 
   constructor() {
     effect(() => {
-      console.log('option', this.data());
+      // console.log('option', this.data());
       this.options.set(this.data().options || []);
     });
   }

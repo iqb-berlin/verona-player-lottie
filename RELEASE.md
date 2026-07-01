@@ -1,5 +1,15 @@
 # Release Notes #
 
+### Release Note 1.2.1 ###
+- add animation exceptions
+- bugfixes
+
+### Release Note 1.2.0 ###
+- add support for external data
+
+### Release Note 1.1.0 ###
+- add new lottie file specs
+
 ### Release Note 1.0.9 ###
 - bugfixes
 
