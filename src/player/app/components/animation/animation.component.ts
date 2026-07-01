@@ -25,7 +25,7 @@ export class AnimationComponent implements AfterViewInit {
 
     effect(() => {
       if (this.sceneContainer && this.animationData()?.animationSrc) {
-        console.log("AnimationData", this.animationData());
+        console.log("new AnimationData", this.animationData());
 
         if (this._currentAnimationId === this.animationData().id) return;
 
@@ -35,6 +35,7 @@ export class AnimationComponent implements AfterViewInit {
           this._dotLottieScene.destroy();
           this.removeListeners();
         }
+
         this._dotLottieScene = new DotLottie({
           canvas: this.sceneContainer.nativeElement,
           autoplay: this.autoplay(),
@@ -65,10 +66,11 @@ export class AnimationComponent implements AfterViewInit {
 
   addListeners(): void {
     if (this._dotLottieScene && this.animationData()?.animationSrc !== undefined) {
+      console.log(this._dotLottieScene.loopCount);
       this._dotLottieScene.addEventListener('loop', ({ loopCount }) => {
         console.log('Animation looped');
         // @ts-ignore
-        if (this.animationData()?.loop) this.completed.emit(this.animationData().id);
+        if (!this.animationData()?.loop) this.completed.emit(this.animationData().id);
         this.loopFinished.emit(this.animationData().id);
       });
       this._dotLottieScene.addEventListener('complete', () => {

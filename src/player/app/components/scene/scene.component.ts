@@ -33,6 +33,7 @@ export class SceneComponent {
     this.foregroundData.set({} as AnimationData);
     this.cockpitData.set('');
     this.interactionData.set({} as InteractionData);
+    this.interactionType.set('');
   }
 
   constructor() {
@@ -77,7 +78,6 @@ export class SceneComponent {
         }
 
         if (this.sceneData().interaction && this.sceneData().interactionType) {
-          console.log(this.sceneData().interactionParameters);
           this.interactionType.set(this.sceneData().interactionType || '');
           if (this.interactionType() === 'BUTTONS')
             this.interactionData.set(this.sceneData().interactionParameters || {} as InteractionData);
@@ -96,6 +96,7 @@ export class SceneComponent {
   }
 
   valueChanged(value: any) {
+    console.log('valueChanged', value);
     if (this.interactionData()?.sharedId) {
       this.unitService.setNewSharedParameter({
         key: this.interactionData().sharedId,
