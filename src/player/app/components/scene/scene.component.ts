@@ -1,15 +1,16 @@
-import { Component, effect, inject, input, OnInit, output, signal } from '@angular/core';
+import { Component, effect, inject, input, signal } from '@angular/core';
 
 import { UnitService } from '../../services/unit.service';
 import { AnimationService } from '../../services/animation.service';
-import { ScriptAnimationComponent } from '../script-animation/script-animation.component';
+import { AnimationComponent } from '../animation/animation.component';
 import { AnimationData, InteractionData, SceneData } from '../../models/unit.model';
 import { OptionsComponent } from '../options/options.component';
+import { ClickLayerComponent } from '../click-layer/click-layer.component';
 
 @Component({
   selector: 'scene',
   templateUrl: './scene.component.html',
-  imports: [ScriptAnimationComponent, OptionsComponent],
+  imports: [AnimationComponent, OptionsComponent, ClickLayerComponent],
   styleUrls: ['./scene.component.scss']
 })
 
@@ -23,6 +24,7 @@ export class SceneComponent {
   foregroundData= signal<AnimationData>({} as AnimationData);
   cockpitData = signal<string>('');
   interactionData = signal<InteractionData>({} as InteractionData );
+  interactionType = signal<string>('');
 
   oldSceneData = {} as SceneData
 
@@ -31,6 +33,7 @@ export class SceneComponent {
     this.foregroundData.set({} as AnimationData);
     this.cockpitData.set('');
     this.interactionData.set({} as InteractionData);
+    this.interactionType.set('');
   }
 
   constructor() {
@@ -41,7 +44,7 @@ export class SceneComponent {
 
         this.oldSceneData = this.sceneData();
 
-        console.log("sceneData", this.sceneData());
+        // console.log("sceneData", this.sceneData());
 
         // TODO make iteration out of it
         const backgroundIds = this.sceneData().backgroundIds || [];
@@ -50,7 +53,7 @@ export class SceneComponent {
           if (animationSrc) {
             this.backgroundData.set({
               animationSrc: animationSrc,
-              id: 'background',
+              id: backgroundIds[0],
               loop: true,
               loopCount: 0
             });
@@ -65,7 +68,7 @@ export class SceneComponent {
           if (animationSrc) {
             this.foregroundData.set({
               animationSrc: animationSrc,
-              id: 'foreground',
+              id: foregroundIds[0],
               loop: true,
               loopCount: 0
             });
@@ -74,16 +77,17 @@ export class SceneComponent {
           }
         }
 
-        if (this.sceneData().interaction && this.sceneData().interactionType === 'BUTTONS') {
-          console.log(this.sceneData().interactionParameters);
-          this.interactionData.set(this.sceneData().interactionParameters || {} as InteractionData);
+        if (this.sceneData().interaction && this.sceneData().interactionType) {
+          this.interactionType.set(this.sceneData().interactionType || '');
+          if (this.interactionType() === 'BUTTONS')
+            this.interactionData.set(this.sceneData().interactionParameters || {} as InteractionData);
         }
 
         this.cockpitData.set(this.sceneData().cockpitSrc || '');
 
-        console.log("interactionData", this.interactionData());
-        console.log("background", this.backgroundData());
-        console.log("foreground", this.foregroundData());
+        // console.log("interactionData", this.interactionData());
+        // console.log("background", this.backgroundData());
+        // console.log("foreground", this.foregroundData());
 
         this.animationService.setAnimationData(this.sceneData().script);
         this.animationService.startAnimation();
@@ -91,7 +95,8 @@ export class SceneComponent {
     });
   }
 
-  valueChanged(value: string) {
+  valueChanged(value: any) {
+    // console.log('valueChanged', value);
     if (this.interactionData()?.sharedId) {
       this.unitService.setNewSharedParameter({
         key: this.interactionData().sharedId,

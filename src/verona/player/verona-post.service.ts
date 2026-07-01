@@ -26,7 +26,7 @@ export class VeronaPostService {
   }
 
   private sendMessage(message: VopMessage): void {
-    console.log(message);
+    // console.log(message);
     this.postTarget.postMessage(message, '*');
   }
 
