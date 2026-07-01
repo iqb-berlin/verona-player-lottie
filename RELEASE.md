@@ -1,5 +1,9 @@
 # Release Notes #
 
+### Release Note 1.2.2 ###
+- disable console.log
+- bugfixes
+
 ### Release Note 1.2.1 ###
 - add animation exceptions
 - bugfixes
