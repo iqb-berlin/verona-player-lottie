@@ -1,5 +1,8 @@
 # Release Notes #
 
+### Release Note 1.2.3 ###
+- add navigationTarget
+
 ### Release Note 1.2.2 ###
 - disable console.log
 - bugfixes

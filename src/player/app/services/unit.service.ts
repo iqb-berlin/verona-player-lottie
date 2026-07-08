@@ -19,7 +19,8 @@ export class UnitService {
   unitData: UnitData = {
     backgroundColor: '#000000',
     scenes: [],
-    animations: []
+    animations: [],
+    navigationTarget: 'next'
   };
 
   externalUnitData: UnitData = {
@@ -34,6 +35,7 @@ export class UnitService {
     this.unitData.backgroundColor = '#000000';
     this.unitData.scenes = [];
     this.unitData.animations = [];
+    this.unitData.navigationTarget = 'next';
     this.playerConfig = {
       sharedParameters: []
     };
@@ -48,6 +50,7 @@ export class UnitService {
     if (unitData.backgroundColor) this.unitData.backgroundColor = unitData.backgroundColor;
     if (unitData.scenes) this.unitData.scenes = unitData.scenes;
     if (unitData.animations) this.unitData.animations = unitData.animations;
+    if (unitData.navigationTarget) this.unitData.navigationTarget = unitData.navigationTarget;
 
     if (this.unitData.scenes.length > 0) {
       this.currentSceneIndex.set(0);
@@ -107,7 +110,7 @@ export class UnitService {
     if (this.currentSceneIndex() < this.unitData.scenes.length) {
       this.sceneData.set(this.unitData.scenes[this.currentSceneIndex()]);
     } else {
-      this.veronaPostService.sendVopUnitNavigationRequestedNotification('next');
+      this.veronaPostService.sendVopUnitNavigationRequestedNotification(this.unitData.navigationTarget || 'next');
     }
   }
 
