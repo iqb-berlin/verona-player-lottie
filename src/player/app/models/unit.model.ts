@@ -1,3 +1,5 @@
+import { NavigationTarget } from '../../../verona/verona.interfaces';
+
 export interface ScriptData {
   scene: string,
   loop: boolean,
@@ -36,7 +38,8 @@ export interface SceneData {
 export interface UnitData {
   backgroundColor: string,
   scenes: SceneData[],
-  animations: AnimationData[]
+  animations: AnimationData[],
+  navigationTarget?: NavigationTarget
 }
 
 export interface InteractionOptions {
